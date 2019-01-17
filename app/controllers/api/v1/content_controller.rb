@@ -2,7 +2,8 @@ class Api::V1::ContentController < ApplicationController
 
   def create
     @content = Content.create(content_params)
-    render json: {@content}
+    @content.clip.attach(content_params[:clip])
+    render json: {name: @content.name, url: url_for(@content.clip)}
   end
 
   def delete
@@ -18,7 +19,7 @@ class Api::V1::ContentController < ApplicationController
   private
 
   def content_params
-    params.require(:content).permit(:id)
+    params.require(:content).permit(:user_id, :name, :channel, :clip)
   end
 
 end

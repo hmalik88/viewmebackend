@@ -11,7 +11,7 @@ skip_before_action :authorized, only: [:create, :index]
     end
 
     def index
-      render json: User.includes(:content), include: ['content']
+      render json: User.includes(:contents), include: ['contents']
     end
 
     def dashboard
