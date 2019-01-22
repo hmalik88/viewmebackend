@@ -3,13 +3,15 @@ class Api::V1::ContentController < ApplicationController
   def create
     @content = Content.create(content_params)
     @content.clip.attach(content_params[:clip])
-    render json: {name: @content.name, url: url_for(@content.clip)}
+    @url = @content.clip.service_url
+    @content.update(url: @url)
+    render json: {name: @content.name, url: @url}
   end
 
   def delete
     @content = Content.find_by(id: content_params[:id])
     @content.destroy
-    render json: {@content}
+    render json: {content: @content}
   end
 
   def index
@@ -19,7 +21,8 @@ class Api::V1::ContentController < ApplicationController
   private
 
   def content_params
-    params.require(:content).permit(:user_id, :name, :channel, :clip)
+    # byebug
+    params.permit(:user_id, :name, :channel, :clip)
   end
 
 end

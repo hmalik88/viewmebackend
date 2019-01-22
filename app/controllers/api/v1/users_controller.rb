@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-skip_before_action :authorized, only: [:create, :index]
+skip_before_action :authorized, only: [:create, :index, :show]
 
     def create
       @user = User.create(user_params)
@@ -14,9 +14,11 @@ skip_before_action :authorized, only: [:create, :index]
       render json: User.includes(:contents), include: ['contents']
     end
 
-    def dashboard
-      render json: {user: UserSeralizer.new(current_user)}, status: :accepted
+    def show
+      @user = User.find_by(id: params[:id])
+      render json: {user: @user, contents: @user.contents}, status: :accepted
     end
+
 
     private
 
