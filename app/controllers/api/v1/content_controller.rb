@@ -28,7 +28,7 @@ skip_before_action :authorized, only: [:create, :index, :show, :update]
 
   def show
     @content = Content.find_by(id: params[:id])
-    render json: {content: @content}, status: :accepted
+    render json: {content: ContentSerializer.new(@content)}, status: :accepted
   end
 
   private
