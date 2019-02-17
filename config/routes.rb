@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       resources :users
       resources :content
       post '/favorites', to: 'favorites#create'
+      delete '/favorites/:id', to: 'favorites#destroy'
       post '/login', to: 'auth#create'
       get '/current_user', to: 'auth#show'
     end
