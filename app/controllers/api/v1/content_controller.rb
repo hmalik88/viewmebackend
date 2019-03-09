@@ -23,12 +23,16 @@ skip_before_action :authorized, only: [:create, :index, :show, :update]
   end
 
   def index
-    render json: Content.includes(:users), include: ['users']
+    @all_content = []
+    Content.all.each do |content|
+      @all_content.push({id: content.id, name: content.name, url: content.url, user: content.user.e_mail, channel: content.channel})
+    end
+    render json: @all_content
   end
 
   def show
     @content = Content.find_by(id: params[:id])
-    render json: {content: ContentSerializer.new(@content)}, status: :accepted
+    render json: {content: ContentSerializer.new(@content), user: @content.user}, status: :accepted
   end
 
   private
