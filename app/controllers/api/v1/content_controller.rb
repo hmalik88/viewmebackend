@@ -2,10 +2,10 @@ class Api::V1::ContentController < ApplicationController
 skip_before_action :authorized, only: [:create, :index, :show, :update]
 
   def create
-    @content = Content.new(content_params)
+    @content = Content.new(user_id: content_params[:user_id], name: content_params[:name], channel: content_params[:channel])
     if @content.valid?
-      @content.save
       @content.clip.attach(content_params[:clip])
+      @content.save
       @url = url_for(@content.clip)
       @content.update(url: @url)
       render json: {name: @content.name, url: @url}
