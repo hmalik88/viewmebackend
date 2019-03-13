@@ -10,9 +10,8 @@ skip_before_action :authorized, only: [:create, :index, :show, :update]
       @content.update(url: @url)
       render json: {name: @content.name, url: @url}
     else
-      render json: {message: 'Must enter a name'}, status: :unauthorized
+      render json: {message: 'Must enter all fields'}, status: :unauthorized
     end
-
   end
 
   def destroy
@@ -24,8 +23,14 @@ skip_before_action :authorized, only: [:create, :index, :show, :update]
 
   def update
     @content = Content.find_by(id: params[:id])
-    @content.update(name: content_params[:name], channel: content_params[:channel])
-    render json: {content: @content}
+    @content.name = content_params[:name]
+    @content.channel = content_params[:channel]
+    if @content.valid?
+      @content.save
+      render json: {content: @content}
+    else
+      render json: {message: 'Must enter all fields'}, status: :unauthorized
+    end
   end
 
   def index
