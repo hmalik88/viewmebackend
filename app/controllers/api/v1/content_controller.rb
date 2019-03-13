@@ -2,11 +2,17 @@ class Api::V1::ContentController < ApplicationController
 skip_before_action :authorized, only: [:create, :index, :show, :update]
 
   def create
-    @content = Content.create(content_params)
-    @content.clip.attach(content_params[:clip])
-    @url = url_for(@content.clip)
-    @content.update(url: @url)
-    render json: {name: @content.name, url: @url}
+    @content = Content.new(content_params)
+    if @content.valid?
+      @content.save
+      @content.clip.attach(content_params[:clip])
+      @url = url_for(@content.clip)
+      @content.update(url: @url)
+      render json: {name: @content.name, url: @url}
+    else
+      render json: {message: 'Must enter a name'}, status: :unauthorized
+    end
+
   end
 
   def destroy
